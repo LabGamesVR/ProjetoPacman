@@ -36,10 +36,8 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log("BATEU");
-        if (lives > 0 && quantidadeGhosts < 4 && (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)))
+        if (lives > 0 && quantidadeGhosts < 4 && (Input.GetKeyDown(KeyCode.Space)))
         {
-            Debug.Log("BATEU 2");
             quantidadeGhosts += 1;
             NewGame(false);
         }

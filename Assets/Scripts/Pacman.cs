@@ -15,10 +15,7 @@ public class Pacman : MonoBehaviour
     public int normalX;
     public int normalY;
 
-    SerialPort serialPort;
-    // Configuracao de Porta
-    private const string namePort = "COM13";
-    private const int baudRate = 9600;
+    private GerenciadorMovimentos sensor;
 
     public Game game;
     private void Start()
@@ -40,9 +37,9 @@ public class Pacman : MonoBehaviour
             normalY = 340;
         }
 
-        serialPort = new SerialPort(namePort, baudRate);
-        serialPort.Open();
-        serialPort.ReadTimeout = 50;
+        // serialPort = new SerialPort(namePort, baudRate);
+        // serialPort.Open();
+        // serialPort.ReadTimeout = 50;
     }
 
     private void Awake()
@@ -50,85 +47,57 @@ public class Pacman : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         collider = GetComponent<Collider2D>();
         movement = GetComponent<Movement>();
+        sensor = FindObjectOfType<GerenciadorMovimentos>();
     }
 
-    public int GetInputArduino()
-    {
-        int entrada = 5;
-        if (serialPort.IsOpen)
-        {
-            try
-            {
-                string data = serialPort.ReadLine();
-                string[] tokens = data.Split(',');
-                int x = Convert.ToInt32(tokens[0]);
-                int y = Convert.ToInt32(tokens[1]);
+    // public int GetInputArduino()
+    // {
+    //     int entrada = 5;
+    //     if (serialPort.IsOpen)
+    //     {
+    //         try
+    //         {
+    //             string data = serialPort.ReadLine();
+    //             string[] tokens = data.Split(',');
+    //             int x = Convert.ToInt32(tokens[0]);
+    //             int y = Convert.ToInt32(tokens[1]);
                 
-                entrada = ObterDirecao(x , y);
-            }
-            catch (Exception ex)
-            {
-                Debug.Log("error" + ex.Message);
-            }
-        }
+    //             entrada = ObterDirecao(x , y);
+    //         }
+    //         catch (Exception ex)
+    //         {
+    //             Debug.Log("error" + ex.Message);
+    //         }
+    //     }
 
-        return entrada;
-    }
+    //     return entrada;
+    // }
 
-    private int ObterDirecao(int x, int y)
+    //private int ObterDirecao(int x, int y)
+    private int ObterDirecao()
     {
-        int diferencaX = normalX - x;
-        int diferencaY = normalY - y;
-
-        if (Math.Abs(diferencaX) < 0.20)
+        switch (sensor.ObterDirecao())
         {
-            direcaoAnterior = Direcao.estavel;
-            return (int)Direcao.estavel;
+            case Movimento2Eixos.Direcao.top:
+                return (int)Direcao.cima;
+            case Movimento2Eixos.Direcao.bot:
+                return (int)Direcao.baixo;
+            case Movimento2Eixos.Direcao.left:
+                return (int)Direcao.esquerda;
+            case Movimento2Eixos.Direcao.right:
+                return (int)Direcao.direita;
+            default:
+                break;
         }
-
-        if (diferencaY < 0)
-        {
-            if (Math.Abs(diferencaY) < 0.25)
-            {
-                direcaoAnterior = Direcao.estavel;
-                return (int)Direcao.estavel;
-            }
-        }
-        else
-        {
-            if (Math.Abs(diferencaY) < 0.20)
-            {
-                direcaoAnterior = Direcao.estavel;
-                return (int)Direcao.estavel;
-            }
-        }
-
-        if (Math.Abs(diferencaX) > Math.Abs(diferencaY))
-        {
-            if (diferencaX > 0)
-            {
-                //cima
-                return SetarERetornarDirecao(Direcao.cima, Direcao.baixo);
-            }
-            else
-            {
-                //baixo
-                return SetarERetornarDirecao(Direcao.baixo, Direcao.cima);
-            }
-        }
-        else
-        {
-            if (diferencaY > 0)
-            {
-                //esquerda
-                return SetarERetornarDirecao(Direcao.esquerda, Direcao.direita);
-            }
-            else
-            {
-                //direita 
-                return SetarERetornarDirecao(Direcao.direita, Direcao.esquerda);
-            }
-        }
+        if (Input.GetKey("up"))
+            return (int)Direcao.cima;
+        if (Input.GetKey("down"))
+            return (int)Direcao.baixo;
+        if (Input.GetKey("left"))
+            return (int)Direcao.esquerda;
+        if (Input.GetKey("right"))
+            return (int)Direcao.direita;
+        return (int)Direcao.estavel;    
     }
 
     private int SetarERetornarDirecao(Direcao direcao, Direcao direcaoOposta)
@@ -176,7 +145,7 @@ public class Pacman : MonoBehaviour
 
     private void Update()
     {
-        int entrada = GetInputArduino();
+        int entrada = ObterDirecao();
 
 
         switch (entrada)

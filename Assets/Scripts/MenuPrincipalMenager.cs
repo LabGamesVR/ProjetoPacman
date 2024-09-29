@@ -15,8 +15,8 @@ public class MenuPrincipalMenager : MonoBehaviour
     private string nomeDoLevelDeJogo;
     //Informar porta onde Arduino esta conectado
     SerialPort serialPort;
-    private const string namePort = "COM13";
-    private const int baudRate = 9600;
+    //private const string namePort = "COM13";
+    //private const int baudRate = 9600;
 
     public int valorX = 0;
     public int valorY = 0;
@@ -33,7 +33,7 @@ public class MenuPrincipalMenager : MonoBehaviour
     private void Start()
     {
         StartCoroutine(GetRequest());
-        SetarSerialPort();
+        //SetarSerialPort();
     }
 
     private IEnumerator GetRequest()
@@ -101,14 +101,14 @@ public class MenuPrincipalMenager : MonoBehaviour
 
     private void SetarSerialPort()
     {
-        serialPort = new SerialPort(namePort, baudRate);
-        serialPort.Open();
-        serialPort.ReadTimeout = 50;
+        // serialPort = new SerialPort(namePort, baudRate);
+        // serialPort.Open();
+        // serialPort.ReadTimeout = 50;
     }
 
     public void Jogar()
     {
-        serialPort.Close();
+        //serialPort.Close();
         if (contador > 0 && valorX > 0 && valorY > 0)
         {
             valorX /= contador;
@@ -123,16 +123,16 @@ public class MenuPrincipalMenager : MonoBehaviour
 
     public void Update()
     {
-        if (calibrar)
-        {
-            (int x, int y) = GetInputArduino();
-            if (x > 0 && y > 0)
-            {
-                valorX += x;
-                valorY += y;
-                contador++;
-            }
-        }
+        // if (calibrar)
+        // {
+        //     (int x, int y) = GetInputArduino();
+        //     if (x > 0 && y > 0)
+        //     {
+        //         valorX += x;
+        //         valorY += y;
+        //         contador++;
+        //     }
+        // }
     }
     
     private int ObterIdPacienteSelecionado()
@@ -158,29 +158,6 @@ public class MenuPrincipalMenager : MonoBehaviour
         }
 
         texto.text = nomeTexto;
-    }
-
-    public (int, int) GetInputArduino()
-    {
-        int x = 0;
-        int y = 0;
-        if (serialPort.IsOpen)
-        {
-            try
-            {
-                var data = serialPort.ReadLine();
-                string[] tokens = data.Split(',');
-                x = Convert.ToInt32(tokens[0]);
-                y = Convert.ToInt32(tokens[1]);
-                print("X: " + x + " Y: " + y);
-            }
-            catch (Exception ex)
-            {
-                Debug.Log("error" + ex.Message);
-            }
-        }
-
-        return (x, y);
     }
 }
 
