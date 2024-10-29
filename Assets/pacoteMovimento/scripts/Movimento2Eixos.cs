@@ -263,7 +263,7 @@ public class Movimento2Eixos
 #if UNITY_EDITOR
     void DrawGizmosPlane2(Plane p, float planeSize = 0.6f)
     {
-        Quaternion rotation = Quaternion.LookRotation(p.normal);
+        Quaternion rotation = p.normal==Vector3.zero?Quaternion.identity:Quaternion.LookRotation(p.normal);
         Matrix4x4 trs = Matrix4x4.TRS(Vector3.zero, rotation, Vector3.one);
         Gizmos.matrix = trs;
         // Gizmos.DrawCube(Vector3.zero, new Vector3(planeSize, planeSize, 0.0001f));

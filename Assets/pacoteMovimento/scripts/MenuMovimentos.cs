@@ -33,6 +33,7 @@ public class MenuMovimentos : MonoBehaviour
 
     private GerenciadorMovimentos mov2;
     private string ultimoDispositivo = "";
+    public Toggle toggleElementTutorial;
 
     void Start()
     {
@@ -48,7 +49,6 @@ public class MenuMovimentos : MonoBehaviour
         midBtn.onClick.AddListener(SetMid);
         leftBtn.onClick.AddListener(SetLeft);
         rightBtn.onClick.AddListener(SetRight);
-
     }
 
     void Update(){
@@ -61,6 +61,7 @@ public class MenuMovimentos : MonoBehaviour
             midBtn.GetComponentInChildren<TMP_Text>().text = mov2.NomeMovimento(Movimento2Eixos.Direcao.mid, dispositivo);
             leftBtn.GetComponentInChildren<TMP_Text>().text = mov2.NomeMovimento(Movimento2Eixos.Direcao.left, dispositivo);
             rightBtn.GetComponentInChildren<TMP_Text>().text = mov2.NomeMovimento(Movimento2Eixos.Direcao.right, dispositivo);
+            AtualizarTutorial();
         }
 
         if(mov2.pronto){
@@ -164,6 +165,62 @@ public class MenuMovimentos : MonoBehaviour
 
             default:
                 break;
+        }
+    }
+
+    public void AtualizarTutorial(){
+        
+        topBtn.transform.GetChild(1).gameObject.SetActive(false);
+        botBtn.transform.GetChild(1).gameObject.SetActive(false);
+        leftBtn.transform.GetChild(1).gameObject.SetActive(false);
+        rightBtn.transform.GetChild(1).gameObject.SetActive(false);
+        midBtn.transform.GetChild(1).gameObject.SetActive(false);
+
+        if(toggleElementTutorial.isOn){
+
+            string path = $"pacoteMovimento/tutorial/{ultimoDispositivo}";
+
+            // Check if the folder exists in Resources
+            Object[] loadedAssets = Resources.LoadAll(path, typeof(Sprite));
+
+            if (loadedAssets == null || loadedAssets.Length == 0)
+            {
+                print("No tutorial available");
+            }
+            else{
+                foreach (var asset in loadedAssets)
+                {
+                    if (asset is Sprite sprite)
+                    {
+                        print(sprite.name);
+                        if (sprite.name.ToLower().Contains("top") || sprite.name.ToLower().Contains("cima"))
+                        {
+                            topBtn.transform.GetChild(1).GetComponent<Image>().sprite = sprite;
+                            topBtn.transform.GetChild(1).gameObject.SetActive(true);
+                        }
+                        else if (sprite.name.ToLower().Contains("bot") || sprite.name.ToLower().Contains("baixo"))
+                        {
+                            botBtn.transform.GetChild(1).GetComponent<Image>().sprite = sprite;
+                            botBtn.transform.GetChild(1).gameObject.SetActive(true);
+                        }
+                        else if (sprite.name.ToLower().Contains("left") || sprite.name.ToLower().Contains("esq"))
+                        {
+                            leftBtn.transform.GetChild(1).GetComponent<Image>().sprite = sprite;
+                            leftBtn.transform.GetChild(1).gameObject.SetActive(true);
+                        }
+                        else if (sprite.name.ToLower().Contains("right") || sprite.name.ToLower().Contains("dir"))
+                        {
+                            rightBtn.transform.GetChild(1).GetComponent<Image>().sprite = sprite;
+                            rightBtn.transform.GetChild(1).gameObject.SetActive(true);
+                        }
+                        else if (sprite.name.ToLower().Contains("mid") || sprite.name.ToLower().Contains("cent"))
+                        {
+                            midBtn.transform.GetChild(1).GetComponent<Image>().sprite = sprite;
+                            midBtn.transform.GetChild(1).gameObject.SetActive(true);
+                        }
+                    }
+                }
+            }
         }
     }
 

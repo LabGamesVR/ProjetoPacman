@@ -94,41 +94,49 @@ public class ControladorSensores : MonoBehaviour
         {
             bool erro = false;
             SerialPort newSerialPort = null;
-            foreach (string port in SerialPort.GetPortNames())
+            try
             {
-                // Debug.Log("tentando na porta "+port);
+                
+                foreach (string port in SerialPort.GetPortNames())
+                {
+                    // Debug.Log("tentando na porta "+port);
 
-                erro = false;
-                try
-                {
-                    newSerialPort = new SerialPort(port, 9600)
+                    erro = false;
+                    try
                     {
-                        ReadTimeout = 500
-                    };
-                    newSerialPort.Open();
-                }
-                catch (Exception)
-                {
-                    // Debug.Log(e);
-                    erro = true;
-                }
-                if (!erro)
-                {
-                    for (int i = 0; i < 10; i++)
+                        newSerialPort = new SerialPort(port, 9600)
+                        {
+                            ReadTimeout = 500
+                        };
+                        newSerialPort.Open();
+                    }
+                    catch (Exception)
                     {
-                        Thread.Sleep(100);
-                        try
+                        // Debug.Log(e);
+                        erro = true;
+                    }
+                    if (!erro)
+                    {
+                        for (int i = 0; i < 10; i++)
                         {
-                            string response = newSerialPort.ReadLine();
-                            if (IsValidArduinoResponse(response))
-                                return newSerialPort;
-                        }
-                        catch (Exception)
-                        {
-                            // Debug.Log(e);
+                            Thread.Sleep(100);
+                            try
+                            {
+                                string response = newSerialPort.ReadLine();
+                                if (IsValidArduinoResponse(response))
+                                    return newSerialPort;
+                            }
+                            catch (Exception)
+                            {
+                                // Debug.Log(e);
+                            }
                         }
                     }
                 }
+            }
+            catch (System.Exception)
+            {
+                //Isso existe para capturar e ignorar o IOException "Too many open files"
             }
         }
         return null;
