@@ -259,6 +259,11 @@ public class Movimento2Eixos
             _ => 0.5f
         };
     }
+    
+    public Thresholds GetThresholds()
+    {
+        return thresholds;
+    }
 
 #if UNITY_EDITOR
     void DrawGizmosPlane2(Plane p, float planeSize = 0.6f)
@@ -283,10 +288,6 @@ public class Movimento2Eixos
             lastPoint = newPoint;
         }
         Gizmos.matrix = Matrix4x4.identity;
-    }
-    public Thresholds GetThresholds()
-    {
-        return thresholds;
     }
     public void DrawGizmos(Vector3 pos)
     {
