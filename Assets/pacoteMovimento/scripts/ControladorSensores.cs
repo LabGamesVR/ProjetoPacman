@@ -67,8 +67,8 @@ public class ControladorSensores : MonoBehaviour
             try
             {
                 Vector2 v = new Vector2(
-                    float.Parse(f_reps[1]),
-                    float.Parse(f_reps[2])
+                    float.Parse(f_reps[1], System.Globalization.CultureInfo.InvariantCulture),
+                    float.Parse(f_reps[2], System.Globalization.CultureInfo.InvariantCulture)
                 );
                 // A leitura é feita em radianos pelo sensor.
                 // Como em Unity por padrão trabalhamos com graus,
